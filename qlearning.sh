@@ -6,4 +6,4 @@ explorationStrategyFactor=$3
 discountFactor=$4
 iterations=$5
 
-src/qlearning.py $inputFilename $learningRate $explorationStrategyFactor $discountFactor $iterations
+python3 src/qlearning.py $inputFilename $learningRate $explorationStrategyFactor $discountFactor $iterations
