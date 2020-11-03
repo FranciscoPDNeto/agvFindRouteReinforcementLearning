@@ -109,7 +109,7 @@ def updateQTable(action : Action, reward : int, currentState : State, oldState :
 
 def qLearning():
     initializeQ()
-    for i in range(iterations):
+    for _ in range(iterations):
         currentState = firstState()
         action = actionGenerator(None)
 
