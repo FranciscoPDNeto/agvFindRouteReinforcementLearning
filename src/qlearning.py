@@ -52,7 +52,7 @@ def initializeQ():
     for i in range(y):
         for j in range(x):
             for currentW in range(-1, w+1):
-                qTable[State((i, j), currentW)] = {action:0 for action in Action}
+                qTable[State((i, j), currentW)] = {action: random() * 2 - 1 for action in Action}
 
 def firstState():
     line = randint(0, y - 1)
