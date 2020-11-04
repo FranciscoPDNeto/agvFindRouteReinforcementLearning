@@ -51,7 +51,7 @@ qTable = dict()
 def initializeQ():
     for i in range(y):
         for j in range(x):
-            for currentW in range(-1, w+1):
+            for currentW in range(0, w+1):
                 qTable[State((i, j), currentW)] = {action: random() * 2 - 1 for action in Action}
 
 def firstState():
@@ -95,7 +95,8 @@ def getNextState(currentState: State, action : Action) -> tuple:
     else:
         assert(False)
 
-    if nextW < 0:
+    # Punishes the bot for going out of fuel.
+    if nextW == 0:
         reward = Reward.NOT_IN_WORLD
     return (State(coordNextState, nextW), reward.value)
 
@@ -115,7 +116,7 @@ def qLearning():
         currentState = firstState()
 
         while industryMap[currentState.coord[0]][currentState.coord[1]] in constant.NONTERMINALS and \
-            (currentState.currentW >= 0 or \
+            (currentState.currentW > 0 or \
                 industryMap[currentState.coord[0]][currentState.coord[1]] == constant.LOCALIZATION_POINT):
 
             action = actionGenerator(currentState)
