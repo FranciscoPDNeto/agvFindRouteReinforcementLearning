@@ -113,17 +113,17 @@ def qLearning():
     initializeQ()
     for _ in range(iterations):
         currentState = firstState()
-        action = actionGenerator(None)
 
         while industryMap[currentState.coord[0]][currentState.coord[1]] in constant.NONTERMINALS and \
             (currentState.currentW >= 0 or \
                 industryMap[currentState.coord[0]][currentState.coord[1]] == constant.LOCALIZATION_POINT):
+            
+            action = actionGenerator(currentState)
 
             nextState, reward = getNextState(currentState, action)
 
             updateQTable(action, reward, nextState, currentState, learnRate, discountFactor)
 
-            action = actionGenerator(nextState)
             currentState = nextState
 
 def savePiFile():
