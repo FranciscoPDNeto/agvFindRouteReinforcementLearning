@@ -82,7 +82,7 @@ def getNextState(currentState: State, action : Action) -> tuple:
     if (coordNextState[0] < 0 or coordNextState[0] > y \
         and coordNextState[1] < 0 or coordNextState[1] > x):
 
-        return (currentState, reward)
+        return (currentState, reward.value)
 
     cell = industryMap[coordNextState[0]][coordNextState[1]]
     if cell == constant.COLLECT_POINT:
