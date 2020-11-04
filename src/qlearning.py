@@ -49,17 +49,17 @@ industryMap = [[i for i in line.rstrip('\n')] for line in inputFile]
 qTable = dict()
 
 def initializeQ():
-    for i in range(y):
-        for j in range(x):
+    for i in range(y + 1):
+        for j in range(x + 1):
             for currentW in range(0, w+1):
                 qTable[State((i, j), currentW)] = {action: random() * 2 - 1 for action in Action}
 
 def firstState():
-    line = randint(0, y - 1)
-    column = randint(0, x - 1)
+    line = randint(0, y)
+    column = randint(0, x)
     while industryMap[line][column] in constant.TERMINALS:
-        line = randint(0, y - 1)
-        column = randint(0, x - 1)
+        line = randint(0, y)
+        column = randint(0, x)
 
     return State((line, column), w)
 
@@ -75,25 +75,23 @@ def actionGenerator(state : State) -> Action:
 
 def getNextState(currentState: State, action : Action) -> tuple:
     coordNextState = action(currentState.coord)
-    reward = Reward.NOT_IN_WORLD.value
-    if coordNextState[0] < 0 or coordNextState[0] >= y \
-        or coordNextState[1] < 0 or coordNextState[1] >= x:
-
-        return (currentState, reward)
-
-    cell = industryMap[coordNextState[0]][coordNextState[1]]
+    reward = Reward.NOT_IN_WORLD
     nextW = currentState.currentW-1
-    if cell == constant.COLLECT_POINT:
-        reward = Reward.COLLECT_POINT
-    elif cell == constant.FREEPLACE:
-        reward = Reward.FREEPLACE
-    elif cell == constant.LOCALIZATION_POINT:
-        reward = Reward.LOCALIZATION_POINT
-        nextW = w
-    elif cell == constant.OBSTACLE:
-        reward = Reward.OBSTACLE
-    else:
-        assert(False)
+    if not (coordNextState[0] < 0 and coordNextState[0] > y \
+        and coordNextState[1] < 0 or coordNextState[1] > x):
+
+        cell = industryMap[coordNextState[0]][coordNextState[1]]
+        if cell == constant.COLLECT_POINT:
+            reward = Reward.COLLECT_POINT
+        elif cell == constant.FREEPLACE:
+            reward = Reward.FREEPLACE
+        elif cell == constant.LOCALIZATION_POINT:
+            reward = Reward.LOCALIZATION_POINT
+            nextW = w
+        elif cell == constant.OBSTACLE:
+            reward = Reward.OBSTACLE
+        else:
+            assert(False)
 
     # Punishes the bot for going out of fuel.
     if nextW == 0:
@@ -104,7 +102,7 @@ def updateQTable(action : Action, reward : int, currentState : State, oldState :
     alpha, gamma):
 
     oldValue = qTable[oldState][action]
-    maxQ = qTable[oldState][max(qTable[oldState], key=qTable[oldState].get)]
+    maxQ = qTable[currentState][max(qTable[currentState], key=qTable[currentState].get)]
 
     newValue = oldValue + alpha * (reward + gamma * maxQ - oldValue)
 
