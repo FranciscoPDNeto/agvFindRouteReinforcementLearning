@@ -61,7 +61,7 @@ def firstState():
         line = randint(0, y - 1)
         column = randint(0, x - 1)
     
-    return State((line, column), 0)
+    return State((line, column), w)
 
 def getOptimalAction(currentState : State) -> Action:
     return max(qTable[currentState], key=qTable[currentState].get)
@@ -114,7 +114,7 @@ def qLearning():
         action = actionGenerator(None)
 
         while industryMap[currentState.coord[0]][currentState.coord[1]] in constant.NONTERMINALS and \
-            (currentState.currentW > 0 or \
+            (currentState.currentW >= 0 or \
                 industryMap[currentState.coord[0]][currentState.coord[1]] == constant.LOCALIZATION_POINT):
 
             nextState, reward = getNextState(currentState, action)
