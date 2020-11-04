@@ -33,7 +33,7 @@ class Reward(Enum):
     FREEPLACE = -1
     LOCALIZATION_POINT = 1
     OBSTACLE = -10
-    NOT_IN_WORD = -10
+    NOT_IN_WORLD = -10
     COLLECT_POINT = 10
 
 inputFilename = sys.argv[1]
@@ -60,7 +60,7 @@ def firstState():
     while industryMap[line][column] in constant.TERMINALS:
         line = randint(0, y - 1)
         column = randint(0, x - 1)
-    
+
     return State((line, column), w)
 
 def getOptimalAction(currentState : State) -> Action:
@@ -69,18 +69,18 @@ def getOptimalAction(currentState : State) -> Action:
 def actionGenerator(state : State) -> Action:
     if state != None and random() >= explorationStrategyFactor:
         return getOptimalAction(state)
-    
+
     index = randint(0, len(Action) - 1)
     return list(Action)[index]
 
 def getNextState(currentState: State, action : Action) -> tuple:
     coordNextState = action(currentState.coord)
-    reward = Reward.NOT_IN_WORD.value
+    reward = Reward.NOT_IN_WORLD.value
     if coordNextState[0] < 0 or coordNextState[0] >= y \
         or coordNextState[1] < 0 or coordNextState[1] >= x:
 
         return (currentState, reward)
-    
+
     cell = industryMap[coordNextState[0]][coordNextState[1]]
     nextW = currentState.currentW-1
     if cell == constant.COLLECT_POINT:
@@ -96,7 +96,7 @@ def getNextState(currentState: State, action : Action) -> tuple:
         assert(False)
 
     if nextW < 0:
-        reward = Reward.NOT_IN_WORD
+        reward = Reward.NOT_IN_WORLD
     return (State(coordNextState, nextW), reward.value)
 
 def updateQTable(action : Action, reward : int, currentState : State, oldState : State, \
@@ -117,7 +117,7 @@ def qLearning():
         while industryMap[currentState.coord[0]][currentState.coord[1]] in constant.NONTERMINALS and \
             (currentState.currentW >= 0 or \
                 industryMap[currentState.coord[0]][currentState.coord[1]] == constant.LOCALIZATION_POINT):
-            
+
             action = actionGenerator(currentState)
 
             nextState, reward = getNextState(currentState, action)
