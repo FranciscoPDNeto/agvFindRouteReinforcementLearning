@@ -51,7 +51,7 @@ qTable = dict()
 def initializeQ():
     for i in range(y):
         for j in range(x):
-            for currentW in range(w+1):
+            for currentW in range(-1, w+1):
                 qTable[State((i, j), currentW)] = {action:0 for action in Action}
 
 def firstState():
@@ -95,6 +95,8 @@ def getNextState(currentState: State, action : Action) -> tuple:
     else:
         assert(False)
 
+    if nextW < 0:
+        reward = Reward.NOT_IN_WORD
     return (State(coordNextState, nextW), reward.value)
 
 def updateQTable(action : Action, reward : int, currentState : State, oldState : State, \
@@ -118,9 +120,6 @@ def qLearning():
                 industryMap[currentState.coord[0]][currentState.coord[1]] == constant.LOCALIZATION_POINT):
 
             nextState, reward = getNextState(currentState, action)
-
-            if nextState.currentW < 0:
-                break
 
             updateQTable(action, reward, nextState, currentState, learnRate, discountFactor)
 
