@@ -82,14 +82,14 @@ def getNextState(currentState: State, action : Action) -> tuple:
         return (currentState, reward)
     
     cell = industryMap[coordNextState[0]][coordNextState[1]]
-    nextW = currentState.currentW+1
+    nextW = currentState.currentW-1
     if cell == constant.COLLECT_POINT:
         reward = Reward.COLLECT_POINT
     elif cell == constant.FREEPLACE:
         reward = Reward.FREEPLACE
     elif cell == constant.LOCALIZATION_POINT:
         reward = Reward.LOCALIZATION_POINT
-        nextW = 0
+        nextW = w
     elif cell == constant.OBSTACLE:
         reward = Reward.OBSTACLE
     else:
@@ -114,12 +114,12 @@ def qLearning():
         action = actionGenerator(None)
 
         while industryMap[currentState.coord[0]][currentState.coord[1]] in constant.NONTERMINALS and \
-            (currentState.currentW <= w or \
+            (currentState.currentW > 0 or \
                 industryMap[currentState.coord[0]][currentState.coord[1]] == constant.LOCALIZATION_POINT):
 
             nextState, reward = getNextState(currentState, action)
 
-            if nextState.currentW > w:
+            if nextState.currentW < 0:
                 break
 
             updateQTable(action, reward, nextState, currentState, learnRate, discountFactor)
