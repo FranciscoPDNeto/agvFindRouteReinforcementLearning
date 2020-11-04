@@ -67,7 +67,7 @@ def getOptimalAction(currentState : State) -> Action:
     return max(qTable[currentState], key=qTable[currentState].get)
 
 def actionGenerator(state : State) -> Action:
-    if state != None and random() > explorationStrategyFactor:
+    if state != None and random() >= explorationStrategyFactor:
         return getOptimalAction(state)
     
     index = randint(0, len(Action) - 1)
@@ -103,7 +103,7 @@ def updateQTable(action : Action, reward : int, currentState : State, oldState :
     oldValue = qTable[oldState][action]
     maxQ = qTable[oldState][max(qTable[oldState], key=qTable[oldState].get)]
 
-    newValue = (1 - alpha) * oldValue + alpha * (reward + gamma * maxQ)
+    newValue = oldValue + alpha * (reward + gamma * maxQ - oldValue)
 
     qTable[oldState][action] = newValue
 
